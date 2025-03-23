@@ -12,6 +12,16 @@ interface APIResponse {
 	category: string;
 }
 
+interface APIVfResponse extends APIResponse {
+	axes?: AxesResponseObject[]
+}
+
+interface AxesResponseObject {
+	tag: string;
+	start: number;
+	end: number;
+}
+
 type FontVariants = Record<
 	string,
 	Record<
@@ -70,6 +80,7 @@ type FontObjectV2 = Record<
 		lastModified: string;
 		version: string;
 		category: string;
+		axes?: AxesFontObject
 	}
 >;
 
@@ -159,8 +170,10 @@ export { BASE_AXES, isStandardAxesKey, STANDARD_AXES };
 export type {
 	APIIconResponse,
 	APIResponse,
+	APIVfResponse,
 	Authors,
 	AxesFontObject,
+	AxesResponseObject,
 	FontObject,
 	FontObjectV1,
 	FontObjectV2,

@@ -39,3 +39,11 @@ export const weightListGen = (variants: string[]): number[] => {
 
 	return numberListWithoutDuplicates;
 };
+
+/**
+ * Normalize font names to match Google Fonts API keys.
+ * Example: "Abyssinica SIL" → "abyssinica-sil"
+ */
+export function getIdForFontFamilyName(fontName: string): string {
+	return fontName.toLowerCase().replace(/\s+/g, "-");
+}

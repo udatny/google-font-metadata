@@ -1,11 +1,12 @@
 import * as fs from 'node:fs';
-import { fileURLToPath } from 'node:url';
+import {fileURLToPath} from 'node:url';
 
-import { dirname, join } from 'pathe';
+import {dirname, join} from 'pathe';
 
 import type {
 	APIIconResponse,
 	APIResponse,
+	APIVfResponse,
 	AxesObject,
 	FontObjectV1,
 	FontObjectV2,
@@ -26,6 +27,17 @@ const APIDirect = JSON.parse(
 ) as APIResponse[];
 
 /**
+ * This returns a version of the Google Fonts Developer API with axes for variable fonts.
+ * {@link https://developers.google.com/fonts/docs/developer_api}
+ */
+const APIVFDirect = JSON.parse(
+	fs.readFileSync(
+		join(dirname(fileURLToPath(import.meta.url)), '../data/api-response-variable.json'),
+		'utf8',
+	),
+) as APIVfResponse[];
+
+/**
  * This returns a parsed version of the Google Fonts CSS API (v1) for all Google Fonts.
  * {@link https://developers.google.com/fonts/docs/getting_started}
  */
@@ -40,7 +52,7 @@ const APIv1 = JSON.parse(
 ) as FontObjectV1;
 
 /**
- * This returns a parsed version of the Google Fonts CSS API (v1) for all Google Fonts.
+ * This returns a parsed version of the Google Fonts CSS API (v2) for all Google Fonts.
  * {@link https://developers.google.com/fonts/docs/css2}
  */
 const APIv2 = JSON.parse(
@@ -48,6 +60,20 @@ const APIv2 = JSON.parse(
 		join(
 			dirname(fileURLToPath(import.meta.url)),
 			'../data/google-fonts-v2.json',
+		),
+		'utf8',
+	),
+) as FontObjectV2;
+
+/**
+ * This returns a parsed hybrid (normal and vf fonts) version of the Google Fonts CSS API (v2) for all Google Fonts.
+ * {@link https://developers.google.com/fonts/docs/css2}
+ */
+const APIv2Hybrid = JSON.parse(
+	fs.readFileSync(
+		join(
+			dirname(fileURLToPath(import.meta.url)),
+			'../data/google-fonts-v2-hybrid.json',
 		),
 		'utf8',
 	),
@@ -141,6 +167,7 @@ const APIRegistry = JSON.parse(
 
 export {
 	APIDirect,
+	APIVFDirect,
 	APIIconDirect,
 	APIIconStatic,
 	APIIconVariable,
@@ -148,6 +175,7 @@ export {
 	APIRegistry,
 	APIv1,
 	APIv2,
+	APIv2Hybrid,
 	APIVariable,
 	APIVariableDirect,
 };
