@@ -67,7 +67,7 @@ yarn-error.log
 # IntelijIDEA
 .idea
 
-dist/
+#dist/
 /test-results/
 /playwright-report/
 /blob-report/
