@@ -2,7 +2,7 @@
 import { cac } from 'cac';
 import { consola } from 'consola';
 import colors from 'picocolors';
-import { A as APIDirect, r as checkErrors, s as APIVFDirect, t as orderObject, v as validate, u as APIv2Hybrid, w as getIdForFontFamilyName, x as sortAxes, y as addAndMergeAxesRange, z as fetchAllCSS, B as apiv2, C as addError, D as weightListGen, h as APIRegistry, L as LOOP_LIMIT, E as stripIconsApiGen, f as fetchAPI, o as fetchVariable, p as parsev1, a as parsev2, g as generateAxis, q as parseVariable, m as parseIcons, n as parseLicenses, F as validateCLI } from './variable-gen-CZTb4ILh.mjs';
+import { A as APIDirect, t as checkErrors, b as APIVFDirect, u as orderObject, v as validate, l as APIv2Hybrid, w as getIdForFontFamilyName, x as sortAxes, y as addAndMergeAxesRange, z as fetchAllCSS, B as apiv2, C as addError, D as weightListGen, i as APIRegistry, L as LOOP_LIMIT, E as stripIconsApiGen, f as fetchAPI, r as fetchVariable, p as parsev1, a as parsev2, g as generateAxis, s as parseVariable, o as parseIcons, q as parseLicenses, F as validateCLI } from './variable-gen-arorXeA1.mjs';
 import * as fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { Limiter } from '@evan/concurrency';

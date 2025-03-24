@@ -4,6 +4,7 @@ export { parsev2 } from './api-parser-v2';
 export { generateAxis } from './axis-gen';
 export {
 	APIDirect,
+	APIVFDirect,
 	APIIconDirect,
 	APIIconStatic,
 	APIIconVariable,
@@ -11,6 +12,7 @@ export {
 	APIRegistry,
 	APIv1,
 	APIv2,
+	APIv2Hybrid,
 	APIVariable,
 	APIVariableDirect,
 } from './data';

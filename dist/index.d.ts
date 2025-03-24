@@ -14,6 +14,14 @@ interface APIResponse {
     lastModified: string;
     category: string;
 }
+interface APIVfResponse extends APIResponse {
+    axes?: AxesResponseObject[];
+}
+interface AxesResponseObject {
+    tag: string;
+    start: number;
+    end: number;
+}
 type FontVariants = Record<string, Record<string, Record<string, {
     url: {
         woff2: string;
@@ -115,6 +123,11 @@ declare const generateAxis: (key?: string) => Promise<void>;
  */
 declare const APIDirect: APIResponse[];
 /**
+ * This returns a version of the Google Fonts Developer API with axes for variable fonts.
+ * {@link https://developers.google.com/fonts/docs/developer_api}
+ */
+declare const APIVFDirect: APIVfResponse[];
+/**
  * This returns a parsed version of the Google Fonts CSS API (v1) for all Google Fonts.
  * {@link https://developers.google.com/fonts/docs/getting_started}
  */
@@ -124,6 +137,11 @@ declare const APIv1: FontObjectV1;
  * {@link https://developers.google.com/fonts/docs/css2}
  */
 declare const APIv2: FontObjectV2;
+/**
+ * This returns a parsed hybrid (normal and vf fonts) version of the Google Fonts CSS API (v2) for all Google Fonts.
+ * {@link https://developers.google.com/fonts/docs/css2}
+ */
+declare const APIv2Hybrid: FontObjectV2;
 /**
  * This returns a response from the Google Fonts API for all icons.
  * {@link https://fonts.google.com/icons}
@@ -187,4 +205,4 @@ declare const fetchVariable: () => Promise<void>;
  */
 declare const parseVariable: (noValidate: boolean) => Promise<void>;
 
-export { APIDirect, APIIconDirect, type APIIconResponse, APIIconStatic, APIIconVariable, APILicense, APIRegistry, type APIResponse, APIVariable, APIVariableDirect, APIv1, APIv2, type AxesObject, type FontObject, type FontObjectV1, type FontObjectV2, type FontObjectVariable, type FontObjectVariableDirect, type FontVariants, type FontVariantsVariable, type Licenses, fetchAPI, fetchVariable, generateAxis, parseIcons, parseLicenses, parseVariable, parsev1, parsev2 };
+export { APIDirect, APIIconDirect, type APIIconResponse, APIIconStatic, APIIconVariable, APILicense, APIRegistry, type APIResponse, APIVFDirect, APIVariable, APIVariableDirect, APIv1, APIv2, APIv2Hybrid, type AxesObject, type FontObject, type FontObjectV1, type FontObjectV2, type FontObjectVariable, type FontObjectVariableDirect, type FontVariants, type FontVariantsVariable, type Licenses, fetchAPI, fetchVariable, generateAxis, parseIcons, parseLicenses, parseVariable, parsev1, parsev2 };

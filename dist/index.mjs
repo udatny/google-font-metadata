@@ -1,4 +1,4 @@
-export { A as APIDirect, b as APIIconDirect, c as APIIconStatic, d as APIIconVariable, e as APILicense, h as APIRegistry, k as APIVariable, l as APIVariableDirect, i as APIv1, j as APIv2, f as fetchAPI, o as fetchVariable, g as generateAxis, m as parseIcons, n as parseLicenses, q as parseVariable, p as parsev1, a as parsev2 } from './variable-gen-CZTb4ILh.mjs';
+export { A as APIDirect, c as APIIconDirect, d as APIIconStatic, e as APIIconVariable, h as APILicense, i as APIRegistry, b as APIVFDirect, m as APIVariable, n as APIVariableDirect, j as APIv1, k as APIv2, l as APIv2Hybrid, f as fetchAPI, r as fetchVariable, g as generateAxis, o as parseIcons, q as parseLicenses, s as parseVariable, p as parsev1, a as parsev2 } from './variable-gen-arorXeA1.mjs';
 import 'node:fs/promises';
 import 'node:url';
 import 'consola';
