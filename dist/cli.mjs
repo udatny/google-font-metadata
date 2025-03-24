@@ -181,10 +181,7 @@ const processQueue = async (font, variableFont, force) => {
         }
         const hasItalicVariant = hasAnyVariantWithSubstring(fontObject[fontId].styles, "italic");
         const hasRegularVariant = hasAnyVariantWithSubstring(fontObject[fontId].styles, "normal");
-        if (hasItalicVariant) {
-          let italicStart = hasRegularVariant ? 0 : 1;
-          fontObject[fontId].axes["ital"] = { "default": italicStart.toString(), "min": italicStart.toString(), "max": "1".toString(), "step": "1" };
-        }
+        addItalicAxis(hasItalicVariant, hasRegularVariant, fontObject[fontId].axes);
         if (fontObject[fontId].weights.length > 0) {
           const defaultWeight = fontObject[fontId].weights.includes(400) ? 400 : fontObject[fontId].weights[0];
           if (defaultWeight != 400 || fontObject[fontId].weights.length > 1) {
@@ -196,6 +193,13 @@ const processQueue = async (font, variableFont, force) => {
         fontObject[fontId].isVariable = true;
         const axes = convertAxesArrayToObject(variableFont.axes);
         fontObject[fontId].axes = axes;
+        const hasVFItalicVariant = variableFont.variants.includes("italic");
+        const hasVFRegularVariant = variableFont.variants.includes("regular");
+        const hasItalicAxe = variableFont.axes?.some((axis) => axis.tag === "ital") ?? false;
+        if (!hasItalicAxe && hasVFItalicVariant) {
+          addItalicAxis(hasVFItalicVariant, hasVFRegularVariant, fontObject[fontId].axes);
+          consola.warn("added missing ital axis:" + fontObject[fontId]);
+        }
         let axesKeysExclItal = sortAxes(Object.keys(fontObject[fontId].axes));
         axesKeysExclItal = axesKeysExclItal.filter((axis) => !["ital"].includes(axis));
         let fullTupleExclItal = addAndMergeAxesRange(fontObject[fontId].axes, axesKeysExclItal, []);
@@ -216,6 +220,9 @@ const processQueue = async (font, variableFont, force) => {
               links["italic.variable"] = italicVariationsUrl;
             }
           }
+        }
+        if (fontObject[id].family == "Overpass" || fontObject[id].family == "Aleo") {
+          console.log("Overpass=" + JSON.stringify(links));
         }
         const cssTuple = await fetchAllCSS(links, [apiv2.woff2, apiv2.woff, apiv2.ttf]);
         const variantsObject = parseVariableCSS(cssTuple);
@@ -243,6 +250,12 @@ const processQueue = async (font, variableFont, force) => {
     consola.success(`Parsed ${id}`);
   } catch (error) {
     addError(`${font.family} experienced an error. ${String(error)}`);
+  }
+};
+const addItalicAxis = (hasItalicVariant, hasRegularVariant, axesFontObject) => {
+  if (hasItalicVariant) {
+    let italicStart = hasRegularVariant ? 0 : 1;
+    axesFontObject["ital"] = { "default": italicStart.toString(), "min": italicStart.toString(), "max": "1".toString(), "step": "1" };
   }
 };
 const parseVariableCSS = (cssTuple, defSubset) => {
@@ -299,6 +312,7 @@ const parseVariableCSS = (cssTuple, defSubset) => {
   return fontVariants;
 };
 const parsev2hybrid = async (force, noValidate) => {
+  let count = 0;
   for (const font of APIDirect) {
     checkErrors(LOOP_LIMIT);
     const variableFont = APIVFDirect.find((vffont) => vffont.family === font.family);
@@ -306,6 +320,10 @@ const parsev2hybrid = async (force, noValidate) => {
       console.error("could find variable font from APIVFDirect " + font.family);
     }
     queue.add(() => processQueue(font, variableFont, force));
+    count++;
+    if (count > 2e3) {
+      break;
+    }
   }
   await queue.flush();
   checkErrors();
