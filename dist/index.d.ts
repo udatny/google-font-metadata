@@ -27,6 +27,7 @@ type AxesFontObject = Record<string, {
     min: string;
     max: string;
     step: string;
+    values?: number[];
 }>;
 type FontObjectV1 = Record<string, {
     family: string;
@@ -53,6 +54,7 @@ type FontObjectV2 = Record<string, {
     version: string;
     category: string;
     axes?: AxesFontObject;
+    isVariable?: boolean;
 }>;
 interface FontObjectVariableDirect {
     family: string;

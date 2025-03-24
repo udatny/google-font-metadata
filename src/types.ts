@@ -47,6 +47,7 @@ type AxesFontObject = Record<
 		min: string;
 		max: string;
 		step: string;
+		values?: number[];
 	}
 >;
 
@@ -80,7 +81,8 @@ type FontObjectV2 = Record<
 		lastModified: string;
 		version: string;
 		category: string;
-		axes?: AxesFontObject
+		axes?: AxesFontObject,
+		isVariable?: boolean
 	}
 >;
 

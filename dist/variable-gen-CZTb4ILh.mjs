@@ -1,40 +1,18 @@
-'use strict';
-
-var fs = require('node:fs/promises');
-var node_url = require('node:url');
-var consola = require('consola');
-var stringify = require('json-stringify-pretty-compact');
-var pathe = require('pathe');
-var concurrency = require('@evan/concurrency');
-var stylis = require('stylis');
-var core = require('@octokit/core');
-var fs$1 = require('node:fs');
-var colors = require('picocolors');
-var zod = require('zod');
-var linkedom = require('linkedom');
-var playwright = require('playwright');
-var merge = require('deepmerge');
-
-var _documentCurrentScript = typeof document !== 'undefined' ? document.currentScript : null;
-function _interopNamespaceDefault(e) {
-	var n = Object.create(null);
-	if (e) {
-		Object.keys(e).forEach(function (k) {
-			if (k !== 'default') {
-				var d = Object.getOwnPropertyDescriptor(e, k);
-				Object.defineProperty(n, k, d.get ? d : {
-					enumerable: true,
-					get: function () { return e[k]; }
-				});
-			}
-		});
-	}
-	n.default = e;
-	return Object.freeze(n);
-}
-
-var fs__namespace = /*#__PURE__*/_interopNamespaceDefault(fs);
-var fs__namespace$1 = /*#__PURE__*/_interopNamespaceDefault(fs$1);
+import * as fs from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
+import consola$1, { consola } from 'consola';
+import stringify from 'json-stringify-pretty-compact';
+import { join, dirname } from 'pathe';
+import { Limiter } from '@evan/concurrency';
+import { compile } from 'stylis';
+import { Octokit } from '@octokit/core';
+import * as fs$1 from 'node:fs';
+import fs__default from 'node:fs';
+import colors from 'picocolors';
+import { z } from 'zod';
+import { parseHTML } from 'linkedom';
+import { chromium } from 'playwright';
+import merge from 'deepmerge';
 
 const iconFamilies = /* @__PURE__ */ new Set([
   "Material Icons",
@@ -86,9 +64,9 @@ const stripIconsApiGen = async (api) => {
       stripped.push(font);
     }
   }
-  await fs__namespace.writeFile(
-    pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))),
+  await fs.writeFile(
+    join(
+      dirname(fileURLToPath(import.meta.url)),
       "../data/icons-response.json"
     ),
     stringify(icons)
@@ -105,8 +83,8 @@ const fetchURL = async (url) => {
   }
   const items = await response.json();
   const stripped = await stripIconsApiGen(items.items);
-  await fs__namespace.writeFile(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))), "../data/api-response.json"),
+  await fs.writeFile(
+    join(dirname(fileURLToPath(import.meta.url)), "../data/api-response.json"),
     stringify(stripped)
   );
 };
@@ -115,7 +93,7 @@ const fetchAPI = async (key) => {
   if (key) {
     try {
       await fetchURL(baseurl$2 + key);
-      consola.consola.success("Successful Google Font API fetch.");
+      consola.success("Successful Google Font API fetch.");
     } catch (error) {
       throw new Error(`API fetch error: ${String(error)}`);
     }
@@ -137,83 +115,100 @@ var apiv2 = {
 };
 
 const APIDirect = JSON.parse(
-  fs__namespace$1.readFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))), "../data/api-response.json"),
+  fs$1.readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), "../data/api-response.json"),
     "utf8"
   )
 );
 const APIVFDirect = JSON.parse(
-  fs__namespace$1.readFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))), "../data/api-response-variable.json"),
+  fs$1.readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), "../data/api-response-variable.json"),
     "utf8"
   )
 );
 const APIv1 = JSON.parse(
-  fs__namespace$1.readFileSync(
-    pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))),
+  fs$1.readFileSync(
+    join(
+      dirname(fileURLToPath(import.meta.url)),
       "../data/google-fonts-v1.json"
     ),
     "utf8"
   )
 );
 const APIv2 = JSON.parse(
-  fs__namespace$1.readFileSync(
-    pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))),
+  fs$1.readFileSync(
+    join(
+      dirname(fileURLToPath(import.meta.url)),
       "../data/google-fonts-v2.json"
     ),
     "utf8"
   )
 );
+const APIv2Hybrid = (() => {
+  try {
+    const filePath = join(
+      dirname(fileURLToPath(import.meta.url)),
+      "../data/google-fonts-v2-hybrid.json"
+    );
+    const fileContents = fs$1.readFileSync(filePath, "utf8");
+    return JSON.parse(fileContents);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.warn("Could not load google-fonts-v2-hybrid.json:", error.message);
+    } else {
+      console.warn("Could not load google-fonts-v2-hybrid.json:", error);
+    }
+    return {};
+  }
+})();
 const APIIconDirect = JSON.parse(
-  fs__namespace$1.readFileSync(
-    pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))),
+  fs$1.readFileSync(
+    join(
+      dirname(fileURLToPath(import.meta.url)),
       "../data/icons-response.json"
     ),
     "utf8"
   )
 );
 const APIIconStatic = JSON.parse(
-  fs__namespace$1.readFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))), "../data/icons-static.json"),
+  fs$1.readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), "../data/icons-static.json"),
     "utf8"
   )
 );
 const APIIconVariable = JSON.parse(
-  fs__namespace$1.readFileSync(
-    pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))),
+  fs$1.readFileSync(
+    join(
+      dirname(fileURLToPath(import.meta.url)),
       "../data/icons-variable.json"
     ),
     "utf8"
   )
 );
 const APIVariableDirect = JSON.parse(
-  fs__namespace$1.readFileSync(
-    pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))),
+  fs$1.readFileSync(
+    join(
+      dirname(fileURLToPath(import.meta.url)),
       "../data/variable-response.json"
     ),
     "utf8"
   )
 );
 const APIVariable = JSON.parse(
-  fs__namespace$1.readFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))), "../data/variable.json"),
+  fs$1.readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), "../data/variable.json"),
     "utf8"
   )
 );
 const APILicense = JSON.parse(
-  fs__namespace$1.readFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))), "../data/licenses.json"),
+  fs$1.readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), "../data/licenses.json"),
     "utf8"
   )
 );
 const APIRegistry = JSON.parse(
-  fs__namespace$1.readFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))), "../data/axis-registry.json"),
+  fs$1.readFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), "../data/axis-registry.json"),
     "utf8"
   )
 );
@@ -226,7 +221,7 @@ const addError = (error) => {
 const checkErrors = (limit = 0) => {
   if (errs.length > limit) {
     for (const err of errs) {
-      consola.error(err);
+      consola$1.error(err);
     }
     if (limit > 0) {
       throw new Error("Too many errors occurred during parsing. Stopping...");
@@ -263,14 +258,17 @@ const weightListGen = (variants) => {
   const numberListWithoutDuplicates = [...new Set(numberList)];
   return numberListWithoutDuplicates;
 };
+function getIdForFontFamilyName(fontName) {
+  return fontName.toLowerCase().replace(/\s+/g, "-");
+}
 
 const STANDARD_AXES = ["opsz", "slnt", "wdth", "wght"];
 const isStandardAxesKey = (axesKey) => STANDARD_AXES.includes(axesKey);
 const getAxes = () => {
   const data = JSON.parse(
-    fs$1.readFileSync(
-      pathe.join(
-        pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))),
+    fs__default.readFileSync(
+      join(
+        dirname(fileURLToPath(import.meta.url)),
         "../data/axis-registry.json"
       ),
       "utf8"
@@ -294,67 +292,82 @@ If the problem still persists, Google may have tweaked their API. Please make an
     this.name = "ValidationError";
   }
 }
-const fontVariantsSchema = zod.z.record(
+const fontVariantsSchema = z.record(
   // [style: string]
-  zod.z.record(
+  z.record(
     // [subset: string]
-    zod.z.record(
-      zod.z.object({
-        url: zod.z.object({
-          woff2: zod.z.string().url().min(1),
-          woff: zod.z.string().url().min(1),
-          truetype: zod.z.string().url().min(1).optional(),
-          opentype: zod.z.string().url().min(1).optional()
+    z.record(
+      z.object({
+        url: z.object({
+          woff2: z.string().url().min(1),
+          woff: z.string().url().min(1),
+          truetype: z.string().url().min(1).optional(),
+          opentype: z.string().url().min(1).optional()
         }).strict()
       }).strict()
     )
   )
 );
-const fontObjectV1Schema = zod.z.object({
-  family: zod.z.string().min(1),
-  id: zod.z.string().min(1),
-  subsets: zod.z.array(zod.z.string().min(1)).min(1),
-  weights: zod.z.array(zod.z.number().int()).min(1),
-  styles: zod.z.array(zod.z.string().min(1)).min(1),
+const fontObjectV1Schema = z.object({
+  family: z.string().min(1),
+  id: z.string().min(1),
+  subsets: z.array(z.string().min(1)).min(1),
+  weights: z.array(z.number().int()).min(1),
+  styles: z.array(z.string().min(1)).min(1),
   variants: fontVariantsSchema,
-  defSubset: zod.z.string().min(1),
-  lastModified: zod.z.string().min(1),
-  version: zod.z.string().min(1),
-  category: zod.z.string().min(1)
+  defSubset: z.string().min(1),
+  lastModified: z.string().min(1),
+  version: z.string().min(1),
+  category: z.string().min(1)
 }).strict();
-const fontObjectV2Schema = zod.z.object({
-  family: zod.z.string().min(1),
-  id: zod.z.string().min(1),
-  subsets: zod.z.array(zod.z.string().min(1)).min(1),
-  weights: zod.z.array(zod.z.number().int()).min(1),
-  styles: zod.z.array(zod.z.string().min(1)).min(1),
-  unicodeRange: zod.z.record(zod.z.string().min(1)),
+const fontObjectV2Schema = z.object({
+  family: z.string().min(1),
+  id: z.string().min(1),
+  subsets: z.array(z.string().min(1)).min(1),
+  weights: z.array(z.number().int()).min(1),
+  styles: z.array(z.string().min(1)).min(1),
+  unicodeRange: z.record(z.string().min(1)),
   variants: fontVariantsSchema,
-  defSubset: zod.z.string().min(1),
-  lastModified: zod.z.string().min(1),
-  version: zod.z.string().min(1),
-  category: zod.z.string().min(1),
-  axes: zod.z.array(zod.z.object({})).min(1).optional()
+  defSubset: z.string().min(1),
+  lastModified: z.string().min(1),
+  version: z.string().min(1),
+  category: z.string().min(1),
+  axes: z.object({}).optional()
 }).strict();
-const fontObjectVariableSchema = zod.z.object({
-  family: zod.z.string().min(1),
-  id: zod.z.string().min(1),
-  axes: zod.z.record(
+const fontObjectV2HybridSchema = z.object({
+  family: z.string().min(1),
+  id: z.string().min(1),
+  subsets: z.array(z.string().min(1)).min(1),
+  weights: z.array(z.number().int()).min(1),
+  styles: z.array(z.string().min(1)).min(1),
+  unicodeRange: z.record(z.string().min(1)),
+  variants: fontVariantsSchema,
+  defSubset: z.string().min(1),
+  lastModified: z.string().min(1),
+  version: z.string().min(1),
+  category: z.string().min(1),
+  axes: z.object({}).optional(),
+  isVariable: z.boolean().optional()
+}).strict();
+const fontObjectVariableSchema = z.object({
+  family: z.string().min(1),
+  id: z.string().min(1),
+  axes: z.record(
     // axesType: string
-    zod.z.object({
-      default: zod.z.string().min(1),
-      min: zod.z.string().min(1),
-      max: zod.z.string().min(1),
-      step: zod.z.string().min(1)
+    z.object({
+      default: z.string().min(1),
+      min: z.string().min(1),
+      max: z.string().min(1),
+      step: z.string().min(1)
     }).strict()
   ),
-  variants: zod.z.record(
+  variants: z.record(
     // [type: string]
-    zod.z.record(
+    z.record(
       // [style: string]
-      zod.z.record(
+      z.record(
         // [subset: string]
-        zod.z.string().url().min(1)
+        z.string().url().min(1)
         // url
       )
     )
@@ -383,36 +396,68 @@ Data: ${stringify(data)}`,
     let valid;
     if (version === "v1") valid = fontObjectV1Schema.safeParse(dataId);
     else if (version === "v2") valid = fontObjectV2Schema.safeParse(dataId);
-    else if (version === "v2hybrid") valid = fontObjectV2Schema.safeParse(dataId);
+    else if (version === "v2hybrid") valid = fontObjectV2HybridSchema.safeParse(dataId);
     else
       throw new TypeError(`Invalid version for validator: ${String(version)}`);
     if (!valid.success) throw new ValidationError(valid.error, version, id);
-    const variantKeys = Object.keys(dataId.variants);
-    checkKeys(dataId, variantKeys, "weight", version);
-    for (const weight of variantKeys) {
-      const weightKeys = Object.keys(dataId.variants[weight]);
-      checkKeys(dataId, weightKeys, `styles for weight "${weight}"`, version);
-      if (!/^-?\d+$/.test(weight))
-        throw new ValidationError(`Weight ${weight} is not a number!`, version);
-      for (const style of weightKeys) {
-        const styleKeys = Object.keys(dataId.variants[weight][style]);
-        checkKeys(dataId, styleKeys, `subsets for style ${style}`, version);
+    if (version == "v2hybrid") {
+      const variantKeys = Object.keys(dataId.variants);
+      checkKeys(dataId, variantKeys, "style", version);
+      for (const style of variantKeys) {
+        const styleKeys = Object.keys(dataId.variants[style]);
+        checkKeys(dataId, styleKeys, `weights for style "${style}"`, version);
         if (style !== "normal" && style !== "italic")
           throw new ValidationError(
             `Style ${style} is not a valid style!`,
             version
           );
-        for (const subset of styleKeys) {
-          const obj = dataId.variants[weight][style][subset];
-          if (typeof obj === "string")
-            throw new TypeError(`URL for ${subset} is not an object!`);
-          const newObj = obj.url;
-          checkKeys(
-            dataId,
-            Object.keys(newObj),
-            `urls for subset ${subset}`,
-            version
-          );
+        for (const weight of styleKeys) {
+          if (!/^-?\d+$/.test(weight) && weight !== "variable")
+            throw new ValidationError(`Weight ${weight} is not a number or 'variable'!`, version);
+          const weightKeys = Object.keys(dataId.variants[style][weight]);
+          checkKeys(dataId, weightKeys, `subsets for weight ${weight}`, version);
+          for (const subset of weightKeys) {
+            const obj = dataId.variants[style][weight][subset];
+            if (typeof obj === "string")
+              throw new TypeError(`URL for ${subset} is not an object!`);
+            const newObj = obj.url;
+            checkKeys(
+              dataId,
+              Object.keys(newObj),
+              `urls for subset ${subset}`,
+              version
+            );
+          }
+        }
+      }
+    } else {
+      const variantKeys = Object.keys(dataId.variants);
+      checkKeys(dataId, variantKeys, "weight", version);
+      for (const weight of variantKeys) {
+        const weightKeys = Object.keys(dataId.variants[weight]);
+        checkKeys(dataId, weightKeys, `styles for weight "${weight}"`, version);
+        if (!/^-?\d+$/.test(weight))
+          throw new ValidationError(`Weight ${weight} is not a number!`, version);
+        for (const style of weightKeys) {
+          const styleKeys = Object.keys(dataId.variants[weight][style]);
+          checkKeys(dataId, styleKeys, `subsets for style ${style}`, version);
+          if (style !== "normal" && style !== "italic")
+            throw new ValidationError(
+              `Style ${style} is not a valid style!`,
+              version
+            );
+          for (const subset of styleKeys) {
+            const obj = dataId.variants[weight][style][subset];
+            if (typeof obj === "string")
+              throw new TypeError(`URL for ${subset} is not an object!`);
+            const newObj = obj.url;
+            checkKeys(
+              dataId,
+              Object.keys(newObj),
+              `urls for subset ${subset}`,
+              version
+            );
+          }
         }
       }
     }
@@ -463,7 +508,7 @@ Data: ${stringify(data)}`,
 };
 
 const validate = (version, data) => {
-  consola.consola.info(
+  consola.info(
     `Validating metadata... ${colors.bold(
       colors.yellow(`[API ${version.toUpperCase()}]`)
     )}`
@@ -489,7 +534,7 @@ const validate = (version, data) => {
       throw new Error("Invalid validation version.");
     }
   }
-  consola.consola.success("Metadata valid!");
+  consola.success("Metadata valid!");
 };
 const validateCLI = (version) => {
   let data;
@@ -514,7 +559,7 @@ const validateCLI = (version) => {
 };
 
 const baseurl$1 = "https://fonts.googleapis.com/css?subset=";
-const queue$3 = concurrency.Limiter(18);
+const queue$3 = Limiter(18);
 const results$2 = [];
 const fetchCSS$2 = async (font, userAgent) => {
   const fontFamily = font.family.replaceAll(/\s/g, "+");
@@ -561,7 +606,7 @@ const processCSS$1 = (css, font) => {
     }
   };
   for (const extension of css) {
-    const rules = stylis.compile(extension);
+    const rules = compile(extension);
     let subset = "";
     let fontStyle = "";
     let fontWeight = "";
@@ -633,9 +678,9 @@ const processQueue$3 = async (font, force) => {
       const css = await fetchAllCSS$2(font);
       const fontObject = processCSS$1(css, font);
       results$2.push(fontObject);
-      consola.consola.info(`Updated ${id}`);
+      consola.info(`Updated ${id}`);
     }
-    consola.consola.success(`Parsed ${id}`);
+    consola.success(`Parsed ${id}`);
   } catch (error) {
     addError(`${font.family} experienced an error. ${String(error)}`);
   }
@@ -652,20 +697,20 @@ const parsev1 = async (force, noValidate) => {
   if (!noValidate) {
     validate("v1", ordered);
   }
-  await fs__namespace.writeFile(
-    pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))),
+  await fs.writeFile(
+    join(
+      dirname(fileURLToPath(import.meta.url)),
       "../data/google-fonts-v1.json"
     ),
     stringify(ordered)
   );
-  consola.consola.success(
+  consola.success(
     `All ${results$2.length} font datapoints using CSS APIv1 have been generated.`
   );
 };
 
 const baseurl = "https://fonts.googleapis.com/css2?family=";
-const queue$2 = concurrency.Limiter(18);
+const queue$2 = Limiter(18);
 const results$1 = [];
 const fetchCSS$1 = async (fontFamily, variantsList, userAgent) => {
   const url = `${baseurl}${fontFamily}:ital,wght@${variantsList}`;
@@ -724,7 +769,7 @@ const processCSS = (css, font) => {
     }
   };
   for (const extension of css) {
-    const rules = stylis.compile(extension);
+    const rules = compile(extension);
     let subset = defSubset ?? "latin";
     let fontStyle = "";
     let fontWeight = "";
@@ -816,9 +861,9 @@ const processQueue$2 = async (font, force) => {
       const css = await fetchAllCSS$1(font);
       const fontObject = processCSS(css, font);
       results$1.push(fontObject);
-      consola.consola.info(`Updated ${id}`);
+      consola.info(`Updated ${id}`);
     }
-    consola.consola.success(`Parsed ${id}`);
+    consola.success(`Parsed ${id}`);
   } catch (error) {
     addError(`${font.family} experienced an error. ${String(error)}`);
   }
@@ -835,20 +880,20 @@ const parsev2 = async (force, noValidate) => {
   if (!noValidate) {
     validate("v2", ordered);
   }
-  await fs__namespace.writeFile(
-    pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))),
+  await fs.writeFile(
+    join(
+      dirname(fileURLToPath(import.meta.url)),
       "../data/google-fonts-v2.json"
     ),
     stringify(ordered)
   );
-  consola.consola.success(
+  consola.success(
     `All ${results$1.length} font datapoints using CSS APIv2 have been generated.`
   );
 };
 
 const getDirectory = async (key) => {
-  const octokit = new core.Octokit({ auth: key ?? process.env.GITHUB_TOKEN });
+  const octokit = new Octokit({ auth: key ?? process.env.GITHUB_TOKEN });
   const { data } = await octokit.request(
     "GET /repos/{owner}/{repo}/contents/{path}",
     {
@@ -930,21 +975,21 @@ const generateAxis = async (key) => {
     const result = await downloadAxis(axis);
     finalData.push(result);
   }
-  await fs__namespace.writeFile(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))), "../data/axis-registry.json"),
+  await fs.writeFile(
+    join(dirname(fileURLToPath(import.meta.url)), "../data/axis-registry.json"),
     stringify(finalData)
   );
-  consola.consola.success("Axis registry updated");
+  consola.success("Axis registry updated");
 };
 
-const queue$1 = concurrency.Limiter(10);
+const queue$1 = Limiter(10);
 const results = {};
 const sortAxes = (axesArr) => {
   const upper = axesArr.filter((axes) => axes === axes.toUpperCase()).sort((a, b) => a.localeCompare(b));
   const lower = axesArr.filter((axes) => axes === axes.toLowerCase()).sort((a, b) => a.localeCompare(b));
   return [...lower, ...upper];
 };
-const addAndMergeAxesRange = (font, axesArr, newAxes) => {
+const addAndMergeAxesRange = (fontAxes, axesArr, newAxes, italicValue = 1) => {
   for (const axes of newAxes) {
     if (!axesArr.includes(axes)) {
       axesArr.push(axes);
@@ -952,7 +997,7 @@ const addAndMergeAxesRange = (font, axesArr, newAxes) => {
   }
   const newAxesArr = sortAxes(axesArr);
   const mergedAxes = newAxesArr.join(",");
-  const mergeRange = (mappedAxes) => mappedAxes === "ital" ? "1" : `${font.axes[mappedAxes].min}..${font.axes[mappedAxes].max}`;
+  const mergeRange = (mappedAxes) => mappedAxes === "ital" ? italicValue : `${fontAxes[mappedAxes].min}..${fontAxes[mappedAxes].max}`;
   const mergedRange = newAxesArr.map((axes) => mergeRange(axes)).join(",");
   return [mergedAxes, mergedRange];
 };
@@ -977,11 +1022,11 @@ const generateCSSLinks = (font) => {
         standardAxes.push(axesKey);
       }
       if (hasWght) {
-        const mergedTuple = addAndMergeAxesRange(font, [axesKey], ["wght"]);
+        const mergedTuple = addAndMergeAxesRange(font.axes, [axesKey], ["wght"]);
         links[`${axesKey}.normal`] = `${baseurl}${family}:${mergedTuple[0]}@${mergedTuple[1]}`;
         if (hasItal) {
           const italTuple = addAndMergeAxesRange(
-            font,
+            font.axes,
             [axesKey],
             ["ital", "wght"]
           );
@@ -990,47 +1035,47 @@ const generateCSSLinks = (font) => {
       } else {
         links[`${axesKey}.normal`] = `${baseurl}${family}:${axesKey}@${range}`;
         if (hasItal) {
-          const italTuple = addAndMergeAxesRange(font, [axesKey], ["ital"]);
+          const italTuple = addAndMergeAxesRange(font.axes, [axesKey], ["ital"]);
           links[`${axesKey}.italic`] = `${baseurl}${family}:${italTuple[0]}@${italTuple[1]}`;
         }
       }
     } else {
-      consola.consola.error(
+      consola.error(
         `Unsupported axis: ${axesKey}
  Please make an issue on google-font-metadata to add support.`
       );
     }
   }
   if (hasWght) {
-    let wghtTuple = addAndMergeAxesRange(font, ["wght"], []);
+    let wghtTuple = addAndMergeAxesRange(font.axes, ["wght"], []);
     links["wght.normal"] = `${baseurl}${family}:${wghtTuple[0]}@${wghtTuple[1]}`;
     if (hasItal) {
-      wghtTuple = addAndMergeAxesRange(font, ["wght"], ["ital"]);
+      wghtTuple = addAndMergeAxesRange(font.axes, ["wght"], ["ital"]);
       links["wght.italic"] = `${baseurl}${family}:${wghtTuple[0]}@${wghtTuple[1]}`;
     }
   }
   if (isFull) {
-    let fullTuple = addAndMergeAxesRange(font, fullAxes, []);
-    if (hasWght) fullTuple = addAndMergeAxesRange(font, fullAxes, ["wght"]);
+    let fullTuple = addAndMergeAxesRange(font.axes, fullAxes, []);
+    if (hasWght) fullTuple = addAndMergeAxesRange(font.axes, fullAxes, ["wght"]);
     links["full.normal"] = `${baseurl}${family}:${fullTuple[0]}@${fullTuple[1]}`;
     if (hasItal) {
-      let fullItalTuple = addAndMergeAxesRange(font, fullAxes, ["ital"]);
+      let fullItalTuple = addAndMergeAxesRange(font.axes, fullAxes, ["ital"]);
       if (hasWght)
-        fullItalTuple = addAndMergeAxesRange(font, fullAxes, ["ital", "wght"]);
+        fullItalTuple = addAndMergeAxesRange(font.axes, fullAxes, ["ital", "wght"]);
       links["full.italic"] = `${baseurl}${family}:${fullItalTuple[0]}@${fullItalTuple[1]}`;
     }
   }
   if (isStandard) {
-    let standardTuple = addAndMergeAxesRange(font, standardAxes, []);
+    let standardTuple = addAndMergeAxesRange(font.axes, standardAxes, []);
     if (hasWght)
-      standardTuple = addAndMergeAxesRange(font, standardAxes, ["wght"]);
+      standardTuple = addAndMergeAxesRange(font.axes, standardAxes, ["wght"]);
     links["standard.normal"] = `${baseurl}${family}:${standardTuple[0]}@${standardTuple[1]}`;
     if (hasItal) {
-      let standardItalTuple = addAndMergeAxesRange(font, standardAxes, [
+      let standardItalTuple = addAndMergeAxesRange(font.axes, standardAxes, [
         "ital"
       ]);
       if (hasWght)
-        standardItalTuple = addAndMergeAxesRange(font, standardAxes, [
+        standardItalTuple = addAndMergeAxesRange(font.axes, standardAxes, [
           "ital",
           "wght"
         ]);
@@ -1039,10 +1084,10 @@ const generateCSSLinks = (font) => {
   }
   return links;
 };
-const fetchCSS = async (url) => {
+const fetchCSS = async (url, userAgent = apiv2.variable) => {
   const response = await fetch(url, {
     headers: {
-      "User-Agent": apiv2.variable
+      "User-Agent": userAgent
     }
   });
   if (!response.ok) {
@@ -1053,15 +1098,24 @@ URL: ${url}`
   }
   return response.text();
 };
-const fetchAllCSS = async (links) => await Promise.all(
-  Object.keys(links).map(async (key) => [key, await fetchCSS(links[key])])
-);
+async function fetchAllCSS(links, userAgentsOrUndefined) {
+  const userAgentsArr = userAgentsOrUndefined ?? [apiv2.variable];
+  const results2 = [];
+  for (const key of Object.keys(links)) {
+    for (const ua of userAgentsArr) {
+      results2.push(
+        fetchCSS(links[key], ua).then((css) => [key, css, ua])
+      );
+    }
+  }
+  return Promise.all(results2);
+}
 const parseCSS = (cssTuple, defSubset) => {
   const fontVariants = {};
   let subset = defSubset ?? "latin";
   for (const [key, cssVariant] of cssTuple) {
     const [fontType, fontStyle] = key.split(".");
-    const rules = stylis.compile(cssVariant);
+    const rules = compile(cssVariant);
     for (const rule of rules) {
       if (rule.type === "comm") {
         if (typeof rule.children !== "string")
@@ -1102,7 +1156,7 @@ const processQueue$1 = async (font) => {
     const cssTuple = await fetchAllCSS(cssLinks);
     const variantsObject = parseCSS(cssTuple);
     results[font.id] = { ...font, variants: variantsObject };
-    consola.consola.success(`Parsed ${font.id}`);
+    consola.success(`Parsed ${font.id}`);
   } catch (error) {
     addError(`${font.family} experienced an error. ${String(error)}`);
   }
@@ -1118,16 +1172,16 @@ const parseVariable = async (noValidate) => {
     validate("variable", results);
   }
   const ordered = orderObject(results);
-  await fs__namespace.writeFile(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))), "../data/variable.json"),
+  await fs.writeFile(
+    join(dirname(fileURLToPath(import.meta.url)), "../data/variable.json"),
     stringify(ordered)
   );
-  consola.consola.success(
+  consola.success(
     `All ${Object.keys(results).length} variable font datapoints have been generated.`
   );
 };
 
-const queue = concurrency.Limiter(18);
+const queue = Limiter(18);
 const resultsStatic = [];
 const resultsVariable = {};
 const processQueue = async (icon, force) => {
@@ -1142,7 +1196,7 @@ const processQueue = async (icon, force) => {
       const iconObject = processCSS(css, icon);
       resultsStatic.push(iconObject);
       defSubset = iconObject[id].defSubset;
-      consola.consola.info(`Updated static ${id}`);
+      consola.info(`Updated static ${id}`);
     }
     if (icon.axes !== void 0) {
       if (APIIconVariable[id] !== void 0 && icon.lastModified === APIIconStatic[id].lastModified && !force) {
@@ -1157,10 +1211,10 @@ const processQueue = async (icon, force) => {
         const cssTuple = await fetchAllCSS(cssLinks);
         const variantsObject = parseCSS(cssTuple, defSubset);
         resultsVariable[id] = { ...obj, variants: variantsObject };
-        consola.consola.info(`Updated variable ${id}`);
+        consola.info(`Updated variable ${id}`);
       }
     }
-    consola.consola.success(`Parsed ${id}`);
+    consola.success(`Parsed ${id}`);
   } catch (error) {
     addError(`${icon.family} experienced an error. ${String(error)}`);
   }
@@ -1176,18 +1230,18 @@ const parseIcons = async (force) => {
   const orderedStatic = orderObject(unorderedStatic);
   const unorderedVariable = resultsVariable;
   const orderedVariable = orderObject(unorderedVariable);
-  await fs__namespace.writeFile(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))), "../data/icons-static.json"),
+  await fs.writeFile(
+    join(dirname(fileURLToPath(import.meta.url)), "../data/icons-static.json"),
     stringify(orderedStatic)
   );
-  await fs__namespace.writeFile(
-    pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))),
+  await fs.writeFile(
+    join(
+      dirname(fileURLToPath(import.meta.url)),
       "../data/icons-variable.json"
     ),
     stringify(orderedVariable)
   );
-  consola.consola.success(
+  consola.success(
     `All ${resultsStatic.length} static + ${Object.keys(resultsVariable).length} variable icon datapoints have been generated.`
   );
 };
@@ -1198,7 +1252,7 @@ const URL_REGEX = /\bhttps?:\/\/\S+/gi;
 const BRACKETS_REGEX = /(\s\(c\)|[()<>|])/g;
 const DOUBLE_SPACE_REGEX = /\s\s+/g;
 const processTable$1 = (tableHTML) => {
-  const { document: document2 } = linkedom.parseHTML(tableHTML);
+  const { document: document2 } = parseHTML(tableHTML);
   const results = {};
   let id;
   let license;
@@ -1252,16 +1306,16 @@ const processTable$1 = (tableHTML) => {
       }
     }
   }
-  fs__namespace$1.writeFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))), "../data/licenses.json"),
+  fs$1.writeFileSync(
+    join(dirname(fileURLToPath(import.meta.url)), "../data/licenses.json"),
     stringify(results)
   );
-  consola.consola.success(
+  consola.success(
     `All ${Object.keys(results).length} license datapoints have been fetched and written.`
   );
 };
 const parseLicenses = async () => {
-  const browser = await playwright.chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   await page.route("**/*", (route) => {
     const request = route.request();
@@ -1278,7 +1332,7 @@ const parseLicenses = async () => {
     throw new Error("No table found for license data to parse.");
   });
   await browser.close();
-  consola.consola.info("Fetched attribution table.");
+  consola.info("Fetched attribution table.");
   processTable$1(tableHTML);
 };
 
@@ -1294,7 +1348,7 @@ const scrapeSelector = (selector, document2) => {
   return arr;
 };
 const processTable = (tableHTML) => {
-  const { document: document2 } = linkedom.parseHTML(tableHTML);
+  const { document: document2 } = parseHTML(tableHTML);
   const fontNames = scrapeSelector(
     ".cdk-column-fontFamily.mat-column-fontFamily",
     document2
@@ -1335,19 +1389,19 @@ const processTable = (tableHTML) => {
   if (writeArray.length === 0) {
     throw new Error("No variable font datapoints found.");
   }
-  fs__namespace$1.writeFileSync(
-    pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BJGhbD2p.js', document.baseURI).href)))),
+  fs$1.writeFileSync(
+    join(
+      dirname(fileURLToPath(import.meta.url)),
       "../data/variable-response.json"
     ),
     stringify(writeArray)
   );
-  consola.consola.success(
+  consola.success(
     `All ${writeArray.length} variable font datapoints have been fetched.`
   );
 };
 const fetchVariable = async () => {
-  const browser = await playwright.chromium.launch({ headless: true });
+  const browser = await chromium.launch({ headless: true });
   const page = await browser.newPage();
   await page.goto(url, { waitUntil: "networkidle" });
   const tableHTML = await page.evaluate(() => {
@@ -1363,31 +1417,4 @@ const fetchVariable = async () => {
   processTable(tableHTML);
 };
 
-exports.APIDirect = APIDirect;
-exports.APIIconDirect = APIIconDirect;
-exports.APIIconStatic = APIIconStatic;
-exports.APIIconVariable = APIIconVariable;
-exports.APILicense = APILicense;
-exports.APIRegistry = APIRegistry;
-exports.APIVFDirect = APIVFDirect;
-exports.APIVariable = APIVariable;
-exports.APIVariableDirect = APIVariableDirect;
-exports.APIv1 = APIv1;
-exports.APIv2 = APIv2;
-exports.LOOP_LIMIT = LOOP_LIMIT;
-exports.addError = addError;
-exports.apiv2 = apiv2;
-exports.checkErrors = checkErrors;
-exports.fetchAPI = fetchAPI;
-exports.fetchVariable = fetchVariable;
-exports.generateAxis = generateAxis;
-exports.orderObject = orderObject;
-exports.parseIcons = parseIcons;
-exports.parseLicenses = parseLicenses;
-exports.parseVariable = parseVariable;
-exports.parsev1 = parsev1;
-exports.parsev2 = parsev2;
-exports.stripIconsApiGen = stripIconsApiGen;
-exports.validate = validate;
-exports.validateCLI = validateCLI;
-exports.weightListGen = weightListGen;
+export { APIDirect as A, apiv2 as B, addError as C, weightListGen as D, stripIconsApiGen as E, validateCLI as F, LOOP_LIMIT as L, parsev2 as a, APIIconDirect as b, APIIconStatic as c, APIIconVariable as d, APILicense as e, fetchAPI as f, generateAxis as g, APIRegistry as h, APIv1 as i, APIv2 as j, APIVariable as k, APIVariableDirect as l, parseIcons as m, parseLicenses as n, fetchVariable as o, parsev1 as p, parseVariable as q, checkErrors as r, APIVFDirect as s, orderObject as t, APIv2Hybrid as u, validate as v, getIdForFontFamilyName as w, sortAxes as x, addAndMergeAxesRange as y, fetchAllCSS as z };

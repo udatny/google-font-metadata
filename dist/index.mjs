@@ -1,4 +1,4 @@
-export { A as APIDirect, b as APIIconDirect, c as APIIconStatic, d as APIIconVariable, e as APILicense, h as APIRegistry, k as APIVariable, l as APIVariableDirect, i as APIv1, j as APIv2, f as fetchAPI, o as fetchVariable, g as generateAxis, m as parseIcons, n as parseLicenses, q as parseVariable, p as parsev1, a as parsev2 } from './variable-gen-qU0hH50Q.mjs';
+export { A as APIDirect, b as APIIconDirect, c as APIIconStatic, d as APIIconVariable, e as APILicense, h as APIRegistry, k as APIVariable, l as APIVariableDirect, i as APIv1, j as APIv2, f as fetchAPI, o as fetchVariable, g as generateAxis, m as parseIcons, n as parseLicenses, q as parseVariable, p as parsev1, a as parsev2 } from './variable-gen-CZTb4ILh.mjs';
 import 'node:fs/promises';
 import 'node:url';
 import 'consola';

@@ -88,7 +88,7 @@ const stripIconsApiGen = async (api) => {
   }
   await fs__namespace.writeFile(
     pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))),
+      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))),
       "../data/icons-response.json"
     ),
     stringify(icons)
@@ -106,7 +106,7 @@ const fetchURL = async (url) => {
   const items = await response.json();
   const stripped = await stripIconsApiGen(items.items);
   await fs__namespace.writeFile(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))), "../data/api-response.json"),
+    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))), "../data/api-response.json"),
     stringify(stripped)
   );
 };
@@ -138,20 +138,20 @@ var apiv2 = {
 
 const APIDirect = JSON.parse(
   fs__namespace$1.readFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))), "../data/api-response.json"),
+    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))), "../data/api-response.json"),
     "utf8"
   )
 );
 const APIVFDirect = JSON.parse(
   fs__namespace$1.readFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))), "../data/api-response-variable.json"),
+    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))), "../data/api-response-variable.json"),
     "utf8"
   )
 );
 const APIv1 = JSON.parse(
   fs__namespace$1.readFileSync(
     pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))),
+      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))),
       "../data/google-fonts-v1.json"
     ),
     "utf8"
@@ -160,16 +160,33 @@ const APIv1 = JSON.parse(
 const APIv2 = JSON.parse(
   fs__namespace$1.readFileSync(
     pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))),
+      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))),
       "../data/google-fonts-v2.json"
     ),
     "utf8"
   )
 );
+const APIv2Hybrid = (() => {
+  try {
+    const filePath = pathe.join(
+      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))),
+      "../data/google-fonts-v2-hybrid.json"
+    );
+    const fileContents = fs__namespace$1.readFileSync(filePath, "utf8");
+    return JSON.parse(fileContents);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.warn("Could not load google-fonts-v2-hybrid.json:", error.message);
+    } else {
+      console.warn("Could not load google-fonts-v2-hybrid.json:", error);
+    }
+    return {};
+  }
+})();
 const APIIconDirect = JSON.parse(
   fs__namespace$1.readFileSync(
     pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))),
+      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))),
       "../data/icons-response.json"
     ),
     "utf8"
@@ -177,14 +194,14 @@ const APIIconDirect = JSON.parse(
 );
 const APIIconStatic = JSON.parse(
   fs__namespace$1.readFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))), "../data/icons-static.json"),
+    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))), "../data/icons-static.json"),
     "utf8"
   )
 );
 const APIIconVariable = JSON.parse(
   fs__namespace$1.readFileSync(
     pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))),
+      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))),
       "../data/icons-variable.json"
     ),
     "utf8"
@@ -193,7 +210,7 @@ const APIIconVariable = JSON.parse(
 const APIVariableDirect = JSON.parse(
   fs__namespace$1.readFileSync(
     pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))),
+      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))),
       "../data/variable-response.json"
     ),
     "utf8"
@@ -201,19 +218,19 @@ const APIVariableDirect = JSON.parse(
 );
 const APIVariable = JSON.parse(
   fs__namespace$1.readFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))), "../data/variable.json"),
+    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))), "../data/variable.json"),
     "utf8"
   )
 );
 const APILicense = JSON.parse(
   fs__namespace$1.readFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))), "../data/licenses.json"),
+    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))), "../data/licenses.json"),
     "utf8"
   )
 );
 const APIRegistry = JSON.parse(
   fs__namespace$1.readFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))), "../data/axis-registry.json"),
+    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))), "../data/axis-registry.json"),
     "utf8"
   )
 );
@@ -273,7 +290,7 @@ const getAxes = () => {
   const data = JSON.parse(
     fs$1.readFileSync(
       pathe.join(
-        pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))),
+        pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))),
         "../data/axis-registry.json"
       ),
       "utf8"
@@ -351,7 +368,8 @@ const fontObjectV2HybridSchema = zod.z.object({
   lastModified: zod.z.string().min(1),
   version: zod.z.string().min(1),
   category: zod.z.string().min(1),
-  axes: zod.z.object({}).optional()
+  axes: zod.z.object({}).optional(),
+  isVariable: zod.z.boolean().optional()
 }).strict();
 const fontObjectVariableSchema = zod.z.object({
   family: zod.z.string().min(1),
@@ -416,8 +434,8 @@ Data: ${stringify(data)}`,
             version
           );
         for (const weight of styleKeys) {
-          if (!/^-?\d+$/.test(weight))
-            throw new ValidationError(`Weight ${weight} is not a number!`, version);
+          if (!/^-?\d+$/.test(weight) && weight !== "variable")
+            throw new ValidationError(`Weight ${weight} is not a number or 'variable'!`, version);
           const weightKeys = Object.keys(dataId.variants[style][weight]);
           checkKeys(dataId, weightKeys, `subsets for weight ${weight}`, version);
           for (const subset of weightKeys) {
@@ -703,7 +721,7 @@ const parsev1 = async (force, noValidate) => {
   }
   await fs__namespace.writeFile(
     pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))),
+      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))),
       "../data/google-fonts-v1.json"
     ),
     stringify(ordered)
@@ -886,7 +904,7 @@ const parsev2 = async (force, noValidate) => {
   }
   await fs__namespace.writeFile(
     pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))),
+      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))),
       "../data/google-fonts-v2.json"
     ),
     stringify(ordered)
@@ -980,7 +998,7 @@ const generateAxis = async (key) => {
     finalData.push(result);
   }
   await fs__namespace.writeFile(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))), "../data/axis-registry.json"),
+    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))), "../data/axis-registry.json"),
     stringify(finalData)
   );
   consola.consola.success("Axis registry updated");
@@ -993,7 +1011,7 @@ const sortAxes = (axesArr) => {
   const lower = axesArr.filter((axes) => axes === axes.toLowerCase()).sort((a, b) => a.localeCompare(b));
   return [...lower, ...upper];
 };
-const addAndMergeAxesRange = (fontAxes, axesArr, newAxes) => {
+const addAndMergeAxesRange = (fontAxes, axesArr, newAxes, italicValue = 1) => {
   for (const axes of newAxes) {
     if (!axesArr.includes(axes)) {
       axesArr.push(axes);
@@ -1001,7 +1019,7 @@ const addAndMergeAxesRange = (fontAxes, axesArr, newAxes) => {
   }
   const newAxesArr = sortAxes(axesArr);
   const mergedAxes = newAxesArr.join(",");
-  const mergeRange = (mappedAxes) => mappedAxes === "ital" ? "1" : `${fontAxes[mappedAxes].min}..${fontAxes[mappedAxes].max}`;
+  const mergeRange = (mappedAxes) => mappedAxes === "ital" ? italicValue : `${fontAxes[mappedAxes].min}..${fontAxes[mappedAxes].max}`;
   const mergedRange = newAxesArr.map((axes) => mergeRange(axes)).join(",");
   return [mergedAxes, mergedRange];
 };
@@ -1088,10 +1106,10 @@ const generateCSSLinks = (font) => {
   }
   return links;
 };
-const fetchCSS = async (url) => {
+const fetchCSS = async (url, userAgent = apiv2.variable) => {
   const response = await fetch(url, {
     headers: {
-      "User-Agent": apiv2.variable
+      "User-Agent": userAgent
     }
   });
   if (!response.ok) {
@@ -1102,9 +1120,18 @@ URL: ${url}`
   }
   return response.text();
 };
-const fetchAllCSS = async (links) => await Promise.all(
-  Object.keys(links).map(async (key) => [key, await fetchCSS(links[key])])
-);
+async function fetchAllCSS(links, userAgentsOrUndefined) {
+  const userAgentsArr = userAgentsOrUndefined ?? [apiv2.variable];
+  const results2 = [];
+  for (const key of Object.keys(links)) {
+    for (const ua of userAgentsArr) {
+      results2.push(
+        fetchCSS(links[key], ua).then((css) => [key, css, ua])
+      );
+    }
+  }
+  return Promise.all(results2);
+}
 const parseCSS = (cssTuple, defSubset) => {
   const fontVariants = {};
   let subset = defSubset ?? "latin";
@@ -1168,7 +1195,7 @@ const parseVariable = async (noValidate) => {
   }
   const ordered = orderObject(results);
   await fs__namespace.writeFile(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))), "../data/variable.json"),
+    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))), "../data/variable.json"),
     stringify(ordered)
   );
   consola.consola.success(
@@ -1226,12 +1253,12 @@ const parseIcons = async (force) => {
   const unorderedVariable = resultsVariable;
   const orderedVariable = orderObject(unorderedVariable);
   await fs__namespace.writeFile(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))), "../data/icons-static.json"),
+    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))), "../data/icons-static.json"),
     stringify(orderedStatic)
   );
   await fs__namespace.writeFile(
     pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))),
+      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))),
       "../data/icons-variable.json"
     ),
     stringify(orderedVariable)
@@ -1302,7 +1329,7 @@ const processTable$1 = (tableHTML) => {
     }
   }
   fs__namespace$1.writeFileSync(
-    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))), "../data/licenses.json"),
+    pathe.join(pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))), "../data/licenses.json"),
     stringify(results)
   );
   consola.consola.success(
@@ -1386,7 +1413,7 @@ const processTable = (tableHTML) => {
   }
   fs__namespace$1.writeFileSync(
     pathe.join(
-      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-CjCcWtuJ.js', document.baseURI).href)))),
+      pathe.dirname(node_url.fileURLToPath((typeof document === 'undefined' ? require('u' + 'rl').pathToFileURL(__filename).href : (_documentCurrentScript && _documentCurrentScript.tagName.toUpperCase() === 'SCRIPT' && _documentCurrentScript.src || new URL('variable-gen-BO1QTEIp.js', document.baseURI).href)))),
       "../data/variable-response.json"
     ),
     stringify(writeArray)
@@ -1423,12 +1450,14 @@ exports.APIVariable = APIVariable;
 exports.APIVariableDirect = APIVariableDirect;
 exports.APIv1 = APIv1;
 exports.APIv2 = APIv2;
+exports.APIv2Hybrid = APIv2Hybrid;
 exports.LOOP_LIMIT = LOOP_LIMIT;
 exports.addAndMergeAxesRange = addAndMergeAxesRange;
 exports.addError = addError;
 exports.apiv2 = apiv2;
 exports.checkErrors = checkErrors;
 exports.fetchAPI = fetchAPI;
+exports.fetchAllCSS = fetchAllCSS;
 exports.fetchVariable = fetchVariable;
 exports.generateAxis = generateAxis;
 exports.getIdForFontFamilyName = getIdForFontFamilyName;

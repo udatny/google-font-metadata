@@ -2,7 +2,7 @@
 import { cac } from 'cac';
 import { consola } from 'consola';
 import colors from 'picocolors';
-import { A as APIDirect, r as checkErrors, s as APIVFDirect, t as orderObject, v as validate, u as APIv2Hybrid, w as getIdForFontFamilyName, x as sortAxes, y as addAndMergeAxesRange, z as fetchAllCSS, B as apiv2, C as addError, D as weightListGen, h as APIRegistry, L as LOOP_LIMIT, E as stripIconsApiGen, f as fetchAPI, o as fetchVariable, p as parsev1, a as parsev2, g as generateAxis, q as parseVariable, m as parseIcons, n as parseLicenses, F as validateCLI } from './variable-gen-qU0hH50Q.mjs';
+import { A as APIDirect, r as checkErrors, s as APIVFDirect, t as orderObject, v as validate, u as APIv2Hybrid, w as getIdForFontFamilyName, x as sortAxes, y as addAndMergeAxesRange, z as fetchAllCSS, B as apiv2, C as addError, D as weightListGen, h as APIRegistry, L as LOOP_LIMIT, E as stripIconsApiGen, f as fetchAPI, o as fetchVariable, p as parsev1, a as parsev2, g as generateAxis, q as parseVariable, m as parseIcons, n as parseLicenses, F as validateCLI } from './variable-gen-CZTb4ILh.mjs';
 import * as fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { Limiter } from '@evan/concurrency';
@@ -173,15 +173,27 @@ const processQueue = async (font, variableFont, force) => {
       const fontObject = processStaticFontCSS(css, font);
       const fontId = getIdForFontFamilyName(font.family);
       if (variableFont.axes && variableFont.axes.length > 0) {
-        const axisNames = variableFont.axes?.map((axis) => axis.tag) ?? [];
-        const hasItalAxis = axisNames.includes("ital");
-        const hasItalicVariant = hasAnyVariantWithSubstring(variableFont.variants, "italic");
-        const hasRegularVariant = hasAnyVariantWithSubstring(variableFont.variants, "regular");
-        if (!hasItalAxis && hasItalicVariant) {
-          let italicStart = hasRegularVariant ? 0 : 1;
-          variableFont.axes.push({ start: italicStart, end: 1, tag: "ital" });
-          axisNames.push("ital");
+        fontObject[fontId].isVariable = true;
+      } else {
+        fontObject[fontId].isVariable = false;
+        if (!fontObject[fontId].axes) {
+          fontObject[fontId].axes = {};
         }
+        const hasItalicVariant = hasAnyVariantWithSubstring(fontObject[fontId].styles, "italic");
+        const hasRegularVariant = hasAnyVariantWithSubstring(fontObject[fontId].styles, "normal");
+        if (hasItalicVariant) {
+          let italicStart = hasRegularVariant ? 0 : 1;
+          fontObject[fontId].axes["ital"] = { "default": italicStart.toString(), "min": italicStart.toString(), "max": "1".toString(), "step": "1" };
+        }
+        if (fontObject[fontId].weights.length > 0) {
+          const defaultWeight = fontObject[fontId].weights.includes(400) ? 400 : fontObject[fontId].weights[0];
+          if (defaultWeight != 400 || fontObject[fontId].weights.length > 1) {
+            fontObject[fontId].axes["wght"] = { "default": defaultWeight.toString(), "min": fontObject[fontId].weights[0].toString(), "max": fontObject[fontId].weights[fontObject[fontId].weights.length - 1].toString(), "step": "1", values: fontObject[fontId].weights };
+          }
+        }
+      }
+      if (fontObject[fontId].isVariable) {
+        fontObject[fontId].isVariable = true;
         const axes = convertAxesArrayToObject(variableFont.axes);
         fontObject[fontId].axes = axes;
         let axesKeysExclItal = sortAxes(Object.keys(fontObject[fontId].axes));

@@ -3,7 +3,7 @@
 var cac = require('cac');
 var consola = require('consola');
 var colors = require('picocolors');
-var variableGen = require('./variable-gen-L9JhZ5wd.js');
+var variableGen = require('./variable-gen-BO1QTEIp.js');
 var fs = require('node:fs/promises');
 var node_url = require('node:url');
 var concurrency = require('@evan/concurrency');
@@ -194,15 +194,27 @@ const processQueue = async (font, variableFont, force) => {
       const fontObject = processStaticFontCSS(css, font);
       const fontId = variableGen.getIdForFontFamilyName(font.family);
       if (variableFont.axes && variableFont.axes.length > 0) {
-        const axisNames = variableFont.axes?.map((axis) => axis.tag) ?? [];
-        const hasItalAxis = axisNames.includes("ital");
-        const hasItalicVariant = hasAnyVariantWithSubstring(variableFont.variants, "italic");
-        const hasRegularVariant = hasAnyVariantWithSubstring(variableFont.variants, "regular");
-        if (!hasItalAxis && hasItalicVariant) {
-          let italicStart = hasRegularVariant ? 0 : 1;
-          variableFont.axes.push({ start: italicStart, end: 1, tag: "ital" });
-          axisNames.push("ital");
+        fontObject[fontId].isVariable = true;
+      } else {
+        fontObject[fontId].isVariable = false;
+        if (!fontObject[fontId].axes) {
+          fontObject[fontId].axes = {};
         }
+        const hasItalicVariant = hasAnyVariantWithSubstring(fontObject[fontId].styles, "italic");
+        const hasRegularVariant = hasAnyVariantWithSubstring(fontObject[fontId].styles, "normal");
+        if (hasItalicVariant) {
+          let italicStart = hasRegularVariant ? 0 : 1;
+          fontObject[fontId].axes["ital"] = { "default": italicStart.toString(), "min": italicStart.toString(), "max": "1".toString(), "step": "1" };
+        }
+        if (fontObject[fontId].weights.length > 0) {
+          const defaultWeight = fontObject[fontId].weights.includes(400) ? 400 : fontObject[fontId].weights[0];
+          if (defaultWeight != 400 || fontObject[fontId].weights.length > 1) {
+            fontObject[fontId].axes["wght"] = { "default": defaultWeight.toString(), "min": fontObject[fontId].weights[0].toString(), "max": fontObject[fontId].weights[fontObject[fontId].weights.length - 1].toString(), "step": "1", values: fontObject[fontId].weights };
+          }
+        }
+      }
+      if (fontObject[fontId].isVariable) {
+        fontObject[fontId].isVariable = true;
         const axes = convertAxesArrayToObject(variableFont.axes);
         fontObject[fontId].axes = axes;
         let axesKeysExclItal = variableGen.sortAxes(Object.keys(fontObject[fontId].axes));

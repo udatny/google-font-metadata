@@ -69,16 +69,23 @@ const APIv2 = JSON.parse(
  * This returns a parsed hybrid (normal and vf fonts) version of the Google Fonts CSS API (v2) for all Google Fonts.
  * {@link https://developers.google.com/fonts/docs/css2}
  */
-const APIv2Hybrid = JSON.parse(
-	fs.readFileSync(
-		join(
+const APIv2Hybrid: FontObjectV2 = (() => {
+	try {
+		const filePath = join(
 			dirname(fileURLToPath(import.meta.url)),
 			'../data/google-fonts-v2-hybrid.json',
-		),
-		'utf8',
-	),
-) as FontObjectV2;
-
+		);
+		const fileContents = fs.readFileSync(filePath, 'utf8');
+		return JSON.parse(fileContents) as FontObjectV2;
+	} catch (error) {
+		if (error instanceof Error) {
+			console.warn('Could not load google-fonts-v2-hybrid.json:', error.message);
+		} else {
+			console.warn('Could not load google-fonts-v2-hybrid.json:', error);
+		}
+		return {} as FontObjectV2;
+	}
+})();
 /**
  * This returns a response from the Google Fonts API for all icons.
  * {@link https://fonts.google.com/icons}

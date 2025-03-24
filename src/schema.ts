@@ -90,6 +90,7 @@ const fontObjectV2HybridSchema = z
 		version: z.string().min(1),
 		category: z.string().min(1),
 		axes: z.object({}).optional(),
+		isVariable: z.boolean().optional(),
 	})
 	.strict();
 

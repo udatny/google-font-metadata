@@ -1,6 +1,6 @@
 'use strict';
 
-var variableGen = require('./variable-gen-L9JhZ5wd.js');
+var variableGen = require('./variable-gen-BO1QTEIp.js');
 require('node:fs/promises');
 require('node:url');
 require('consola');

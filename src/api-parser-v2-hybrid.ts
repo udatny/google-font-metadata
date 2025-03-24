@@ -265,22 +265,38 @@ const processQueue = async (
             const fontObject = processStaticFontCSS(css, font);
             const fontId = getIdForFontFamilyName(font.family)
 
-            // if this is a variable font
-            // lets add the metadata
             if (variableFont.axes && variableFont.axes.length > 0) {
+                fontObject[fontId].isVariable = true;
+            }
+            else {
+                fontObject[fontId].isVariable = false;
 
-                // add artificial ital axis
-                const axisNames = variableFont.axes?.map(axis => axis.tag) ?? [];
-                const hasItalAxis = axisNames.includes('ital');
-                const hasItalicVariant = hasAnyVariantWithSubstring(variableFont.variants, "italic")
-                const hasRegularVariant = hasAnyVariantWithSubstring(variableFont.variants, "regular")
-
-                if (!hasItalAxis && hasItalicVariant) {
-                    let italicStart = hasRegularVariant ? 0 : 1;
-                    variableFont.axes.push({start: italicStart, end: 1, tag: "ital"})
-                    axisNames.push("ital")
+                // add empty axes
+                if (!fontObject[fontId].axes) {
+                    fontObject[fontId].axes = {}
                 }
 
+                // add compatible ital and wght axis
+                const hasItalicVariant = hasAnyVariantWithSubstring(fontObject[fontId].styles, "italic")
+                const hasRegularVariant = hasAnyVariantWithSubstring(fontObject[fontId].styles, "normal")
+
+                if (hasItalicVariant) {
+                    let italicStart = hasRegularVariant ? 0 : 1;
+                    fontObject[fontId].axes["ital"] = {"default": italicStart.toString(), "min": italicStart.toString(), "max": "1".toString(), "step": "1"}
+                }
+                if (fontObject[fontId].weights.length>0)
+                {
+                    const defaultWeight = fontObject[fontId].weights.includes(400) ? 400 : fontObject[fontId].weights[0];
+                    if (defaultWeight!=400 || fontObject[fontId].weights.length>1) {
+                        fontObject[fontId].axes["wght"] = {"default": defaultWeight.toString(), "min": fontObject[fontId].weights[0].toString(), "max": fontObject[fontId].weights[fontObject[fontId].weights.length-1].toString(), "step": "1", values: fontObject[fontId].weights}
+                    }
+                }
+            }
+
+            // if this is a variable font
+            // lets add the metadata
+            if (fontObject[fontId].isVariable) {
+                fontObject[fontId].isVariable = true;
 
                 // set the axes from the variable font object,
                 const axes = convertAxesArrayToObject(variableFont.axes)
