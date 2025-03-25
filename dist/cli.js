@@ -3,7 +3,7 @@
 var cac = require('cac');
 var consola = require('consola');
 var colors = require('picocolors');
-var variableGen = require('./variable-gen-BO1QTEIp.js');
+var variableGen = require('./variable-gen-Bhx67No6.js');
 var fs = require('node:fs/promises');
 var node_url = require('node:url');
 var concurrency = require('@evan/concurrency');
@@ -138,10 +138,7 @@ const processStaticFontCSS = (css, font) => {
               throw new TypeError(
                 `Unknown unicode-range child: ${String(subrule.children)}`
               );
-            fontObject[id].unicodeRange = {
-              ...fontObject[id].unicodeRange,
-              [subset]: subrule.children
-            };
+            fontObject[id].unicodeRange[subset] = variableGen.parseUnicodeRange(subrule.children);
           }
           if (subrule.props === "src") {
             if (typeof subrule.children !== "string")
@@ -180,7 +177,7 @@ const processStaticFontCSS = (css, font) => {
   }
   if (Object.keys(fontObject[id].unicodeRange).length === 0 && fontObject[id].defSubset) {
     consola.consola.warn("adding some default unicode range for " + id + ":" + fontObject[id].defSubset);
-    fontObject[id].unicodeRange[fontObject[id].defSubset] = "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD";
+    fontObject[id].unicodeRange[fontObject[id].defSubset] = variableGen.parseUnicodeRange("U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD");
   }
   return fontObject;
 };
@@ -219,7 +216,7 @@ const processQueue = async (font, variableFont, force) => {
         const hasItalicAxe = variableFont.axes?.some((axis) => axis.tag === "ital") ?? false;
         if (!hasItalicAxe && hasVFItalicVariant) {
           addItalicAxis(hasVFItalicVariant, hasVFRegularVariant, fontObject[fontId].axes);
-          consola.consola.warn("added missing ital axis:" + fontObject[fontId]);
+          consola.consola.info("added missing ital axis to :" + fontObject[fontId].family);
         }
         let axesKeysExclItal = variableGen.sortAxes(Object.keys(fontObject[fontId].axes));
         axesKeysExclItal = axesKeysExclItal.filter((axis) => !["ital"].includes(axis));

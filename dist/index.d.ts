@@ -64,6 +64,23 @@ type FontObjectV2 = Record<string, {
     axes?: AxesFontObject;
     isVariable?: boolean;
 }>;
+type FontObjectV2Hybrid = Record<string, {
+    family: string;
+    id: string;
+    subsets: string[];
+    weights: number[];
+    styles: string[];
+    unicodeRange: SubsetUnicodeRanges;
+    variants: FontVariants;
+    defSubset: string;
+    lastModified: string;
+    version: string;
+    category: string;
+    axes?: AxesFontObject;
+    isVariable?: boolean;
+}>;
+type CodepointRange = [number, number];
+type SubsetUnicodeRanges = Record<string, CodepointRange[]>;
 interface FontObjectVariableDirect {
     family: string;
     id: string;
@@ -141,7 +158,7 @@ declare const APIv2: FontObjectV2;
  * This returns a parsed hybrid (normal and vf fonts) version of the Google Fonts CSS API (v2) for all Google Fonts.
  * {@link https://developers.google.com/fonts/docs/css2}
  */
-declare const APIv2Hybrid: FontObjectV2;
+declare const APIv2Hybrid: FontObjectV2Hybrid;
 /**
  * This returns a response from the Google Fonts API for all icons.
  * {@link https://fonts.google.com/icons}

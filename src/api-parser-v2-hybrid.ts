@@ -11,14 +11,15 @@ import {apiv2 as userAgents} from '../data/user-agents.json';
 import {APIDirect, APIRegistry, APIv2Hybrid, APIVFDirect} from './data';
 import {addError, checkErrors, LOOP_LIMIT} from './errors';
 import type {APIResponse, APIVfResponse, AxesFontObject, AxesResponseObject, FontObjectV2, FontVariants} from './types';
-import {getIdForFontFamilyName, orderObject, weightListGen} from './utils';
+import {getIdForFontFamilyName, orderObject, parseUnicodeRange, weightListGen} from './utils';
 import {validate} from './validate';
 import {addAndMergeAxesRange, fetchAllCSS, Links, sortAxes} from "./variable-parser";
+import {FontObjectV2Hybrid} from "./types";
 
 const baseurl = 'https://fonts.googleapis.com/css2?family=';
 const queue = Limiter(18);
 
-const results: FontObjectV2[] = [];
+const results: FontObjectV2Hybrid[] = [];
 
 export const fetchCSS = async (
     fontFamily: string,
@@ -92,7 +93,7 @@ export const processStaticFontCSS = (
     const id = getIdForFontFamilyName(font.family)
     const defSubset = font.subsets.includes('latin') ? 'latin' : font.subsets[0];
 
-    const fontObject: FontObjectV2 = {
+    const fontObject: FontObjectV2Hybrid = {
         [id]: {
             family: font.family,
             id,
@@ -163,11 +164,7 @@ export const processStaticFontCSS = (
                             throw new TypeError(
                                 `Unknown unicode-range child: ${String(subrule.children)}`,
                             );
-
-                        fontObject[id].unicodeRange = {
-                            ...fontObject[id].unicodeRange,
-                            [subset]: subrule.children,
-                        };
+                        fontObject[id].unicodeRange[subset] = parseUnicodeRange(subrule.children);
                     }
 
                     // Define src props
@@ -238,7 +235,7 @@ export const processStaticFontCSS = (
     ) {
         consola.warn("adding some default unicode range for " + id + ":" + fontObject[id].defSubset)
         fontObject[id].unicodeRange[fontObject[id].defSubset] =
-            'U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD';
+            parseUnicodeRange('U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD');
     }
 
     return fontObject;
@@ -308,7 +305,7 @@ const processQueue = async (
 
                 if (!hasItalicAxe && hasVFItalicVariant) {
                     addItalicAxis(hasVFItalicVariant,hasVFRegularVariant, fontObject[fontId].axes)
-                    consola.warn("added missing ital axis:" + fontObject[fontId])
+                    consola.info("added missing ital axis to :" + fontObject[fontId].family)
                 }
 
                 let axesKeysExclItal = sortAxes(Object.keys(fontObject[fontId].axes));

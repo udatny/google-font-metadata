@@ -261,6 +261,14 @@ const weightListGen = (variants) => {
 function getIdForFontFamilyName(fontName) {
   return fontName.toLowerCase().replace(/\s+/g, "-");
 }
+function parseUnicodeRange(rangeStr) {
+  return rangeStr.split(",").map((part) => {
+    const [start, end] = part.replace(/U\+/, "").split("-");
+    const from = parseInt(start, 16);
+    const to = end ? parseInt(end, 16) : from;
+    return [from, to];
+  });
+}
 
 const STANDARD_AXES = ["opsz", "slnt", "wdth", "wght"];
 const isStandardAxesKey = (axesKey) => STANDARD_AXES.includes(axesKey);
@@ -340,7 +348,7 @@ const fontObjectV2HybridSchema = z.object({
   subsets: z.array(z.string().min(1)).min(1),
   weights: z.array(z.number().int()).min(1),
   styles: z.array(z.string().min(1)).min(1),
-  unicodeRange: z.record(z.string().min(1)),
+  unicodeRange: z.record(z.array(z.array(z.number().int()).min(2).max(2))),
   variants: fontVariantsSchema,
   defSubset: z.string().min(1),
   lastModified: z.string().min(1),
@@ -1417,4 +1425,4 @@ const fetchVariable = async () => {
   processTable(tableHTML);
 };
 
-export { APIDirect as A, apiv2 as B, addError as C, weightListGen as D, stripIconsApiGen as E, validateCLI as F, LOOP_LIMIT as L, parsev2 as a, APIVFDirect as b, APIIconDirect as c, APIIconStatic as d, APIIconVariable as e, fetchAPI as f, generateAxis as g, APILicense as h, APIRegistry as i, APIv1 as j, APIv2 as k, APIv2Hybrid as l, APIVariable as m, APIVariableDirect as n, parseIcons as o, parsev1 as p, parseLicenses as q, fetchVariable as r, parseVariable as s, checkErrors as t, orderObject as u, validate as v, getIdForFontFamilyName as w, sortAxes as x, addAndMergeAxesRange as y, fetchAllCSS as z };
+export { APIDirect as A, apiv2 as B, addError as C, weightListGen as D, parseUnicodeRange as E, stripIconsApiGen as F, validateCLI as G, LOOP_LIMIT as L, parsev2 as a, APIVFDirect as b, APIIconDirect as c, APIIconStatic as d, APIIconVariable as e, fetchAPI as f, generateAxis as g, APILicense as h, APIRegistry as i, APIv1 as j, APIv2 as k, APIv2Hybrid as l, APIVariable as m, APIVariableDirect as n, parseIcons as o, parsev1 as p, parseLicenses as q, fetchVariable as r, parseVariable as s, checkErrors as t, orderObject as u, validate as v, getIdForFontFamilyName as w, sortAxes as x, addAndMergeAxesRange as y, fetchAllCSS as z };

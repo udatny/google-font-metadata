@@ -9,7 +9,7 @@ import type {
 	APIVfResponse,
 	AxesObject,
 	FontObjectV1,
-	FontObjectV2,
+	FontObjectV2, FontObjectV2Hybrid,
 	FontObjectVariable,
 	FontObjectVariableDirect,
 	Licenses,
@@ -69,21 +69,21 @@ const APIv2 = JSON.parse(
  * This returns a parsed hybrid (normal and vf fonts) version of the Google Fonts CSS API (v2) for all Google Fonts.
  * {@link https://developers.google.com/fonts/docs/css2}
  */
-const APIv2Hybrid: FontObjectV2 = (() => {
+const APIv2Hybrid: FontObjectV2Hybrid = (() => {
 	try {
 		const filePath = join(
 			dirname(fileURLToPath(import.meta.url)),
 			'../data/google-fonts-v2-hybrid.json',
 		);
 		const fileContents = fs.readFileSync(filePath, 'utf8');
-		return JSON.parse(fileContents) as FontObjectV2;
+		return JSON.parse(fileContents) as FontObjectV2Hybrid;
 	} catch (error) {
 		if (error instanceof Error) {
 			console.warn('Could not load google-fonts-v2-hybrid.json:', error.message);
 		} else {
 			console.warn('Could not load google-fonts-v2-hybrid.json:', error);
 		}
-		return {} as FontObjectV2;
+		return {} as FontObjectV2Hybrid;
 	}
 })();
 /**

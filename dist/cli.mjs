@@ -2,7 +2,7 @@
 import { cac } from 'cac';
 import { consola } from 'consola';
 import colors from 'picocolors';
-import { A as APIDirect, t as checkErrors, b as APIVFDirect, u as orderObject, v as validate, l as APIv2Hybrid, w as getIdForFontFamilyName, x as sortAxes, y as addAndMergeAxesRange, z as fetchAllCSS, B as apiv2, C as addError, D as weightListGen, i as APIRegistry, L as LOOP_LIMIT, E as stripIconsApiGen, f as fetchAPI, r as fetchVariable, p as parsev1, a as parsev2, g as generateAxis, s as parseVariable, o as parseIcons, q as parseLicenses, F as validateCLI } from './variable-gen-arorXeA1.mjs';
+import { A as APIDirect, t as checkErrors, b as APIVFDirect, u as orderObject, v as validate, l as APIv2Hybrid, w as getIdForFontFamilyName, x as sortAxes, y as addAndMergeAxesRange, z as fetchAllCSS, B as apiv2, C as addError, D as weightListGen, E as parseUnicodeRange, i as APIRegistry, L as LOOP_LIMIT, F as stripIconsApiGen, f as fetchAPI, r as fetchVariable, p as parsev1, a as parsev2, g as generateAxis, s as parseVariable, o as parseIcons, q as parseLicenses, G as validateCLI } from './variable-gen-Hzatds50.mjs';
 import * as fs from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import { Limiter } from '@evan/concurrency';
@@ -117,10 +117,7 @@ const processStaticFontCSS = (css, font) => {
               throw new TypeError(
                 `Unknown unicode-range child: ${String(subrule.children)}`
               );
-            fontObject[id].unicodeRange = {
-              ...fontObject[id].unicodeRange,
-              [subset]: subrule.children
-            };
+            fontObject[id].unicodeRange[subset] = parseUnicodeRange(subrule.children);
           }
           if (subrule.props === "src") {
             if (typeof subrule.children !== "string")
@@ -159,7 +156,7 @@ const processStaticFontCSS = (css, font) => {
   }
   if (Object.keys(fontObject[id].unicodeRange).length === 0 && fontObject[id].defSubset) {
     consola.warn("adding some default unicode range for " + id + ":" + fontObject[id].defSubset);
-    fontObject[id].unicodeRange[fontObject[id].defSubset] = "U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD";
+    fontObject[id].unicodeRange[fontObject[id].defSubset] = parseUnicodeRange("U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD");
   }
   return fontObject;
 };
@@ -198,7 +195,7 @@ const processQueue = async (font, variableFont, force) => {
         const hasItalicAxe = variableFont.axes?.some((axis) => axis.tag === "ital") ?? false;
         if (!hasItalicAxe && hasVFItalicVariant) {
           addItalicAxis(hasVFItalicVariant, hasVFRegularVariant, fontObject[fontId].axes);
-          consola.warn("added missing ital axis:" + fontObject[fontId]);
+          consola.info("added missing ital axis to :" + fontObject[fontId].family);
         }
         let axesKeysExclItal = sortAxes(Object.keys(fontObject[fontId].axes));
         axesKeysExclItal = axesKeysExclItal.filter((axis) => !["ital"].includes(axis));

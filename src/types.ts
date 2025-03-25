@@ -86,6 +86,28 @@ type FontObjectV2 = Record<
 	}
 >;
 
+type FontObjectV2Hybrid = Record<
+	string,
+	{
+		family: string;
+		id: string;
+		subsets: string[];
+		weights: number[];
+		styles: string[];
+		unicodeRange: SubsetUnicodeRanges;
+		variants: FontVariants;
+		defSubset: string;
+		lastModified: string;
+		version: string;
+		category: string;
+		axes?: AxesFontObject,
+		isVariable?: boolean
+	}
+>;
+
+type CodepointRange = [number, number]; // inclusive
+type SubsetUnicodeRanges = Record<string, CodepointRange[]>;
+
 // Variable
 interface FontObjectVariableDirect {
 	family: string;
@@ -176,9 +198,11 @@ export type {
 	Authors,
 	AxesFontObject,
 	AxesResponseObject,
+	CodepointRange,
 	FontObject,
 	FontObjectV1,
 	FontObjectV2,
+	FontObjectV2Hybrid,
 	FontObjectVariable,
 	FontObjectVariableDirect,
 	FontVariants,
@@ -186,4 +210,5 @@ export type {
 	License,
 	Licenses,
 	StandardAxes,
+	SubsetUnicodeRanges
 };

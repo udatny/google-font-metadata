@@ -83,7 +83,7 @@ const fontObjectV2HybridSchema = z
 		subsets: z.array(z.string().min(1)).min(1),
 		weights: z.array(z.number().int()).min(1),
 		styles: z.array(z.string().min(1)).min(1),
-		unicodeRange: z.record(z.string().min(1)),
+		unicodeRange: z.record(z.array(z.array(z.number().int()).min(2).max(2))),
 		variants: fontVariantsSchema,
 		defSubset: z.string().min(1),
 		lastModified: z.string().min(1),
