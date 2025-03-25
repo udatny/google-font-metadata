@@ -222,4 +222,4 @@ declare const fetchVariable: () => Promise<void>;
  */
 declare const parseVariable: (noValidate: boolean) => Promise<void>;
 
-export { APIDirect, APIIconDirect, type APIIconResponse, APIIconStatic, APIIconVariable, APILicense, APIRegistry, type APIResponse, APIVFDirect, APIVariable, APIVariableDirect, APIv1, APIv2, APIv2Hybrid, type AxesObject, type FontObject, type FontObjectV1, type FontObjectV2, type FontObjectVariable, type FontObjectVariableDirect, type FontVariants, type FontVariantsVariable, type Licenses, fetchAPI, fetchVariable, generateAxis, parseIcons, parseLicenses, parseVariable, parsev1, parsev2 };
+export { APIDirect, APIIconDirect, type APIIconResponse, APIIconStatic, APIIconVariable, APILicense, APIRegistry, type APIResponse, APIVFDirect, APIVariable, APIVariableDirect, APIv1, APIv2, APIv2Hybrid, type AxesObject, type FontObject, type FontObjectV1, type FontObjectV2, type FontObjectV2Hybrid, type FontObjectVariable, type FontObjectVariableDirect, type FontVariants, type FontVariantsVariable, type Licenses, fetchAPI, fetchVariable, generateAxis, parseIcons, parseLicenses, parseVariable, parsev1, parsev2 };

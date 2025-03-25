@@ -25,6 +25,7 @@ export type {
 	FontObject,
 	FontObjectV1,
 	FontObjectV2,
+	FontObjectV2Hybrid,
 	FontObjectVariable,
 	FontObjectVariableDirect,
 	FontVariants,
