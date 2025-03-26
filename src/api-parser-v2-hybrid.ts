@@ -332,11 +332,24 @@ const processQueue = async (
                         }
                     }
                 }
-                if (fontObject[id].family == "Overpass" || fontObject[id].family == "Aleo") {
-                    console.log("Overpass=" + JSON.stringify(links))
-                }
-                const cssTuple = await fetchAllCSS(links, [userAgents.woff2, userAgents.woff, userAgents.ttf]);
+
+                // we fetch only woff2 and woff
+                // the ttf response will not contain a single variable ttf,
+                // we need to use the one from the api-response-variable
+                const cssTuple = await fetchAllCSS(links, [userAgents.woff2, userAgents.woff]);
                 const variantsObject = parseVariableCSS(cssTuple);
+
+                // transfer ttf urls from api-response-variable
+                fontObject[fontId].styles.forEach( style => {
+
+                    Object.keys(
+                        variantsObject[style]["variable"]
+                    ).forEach( subset => {
+                        variantsObject[style]["variable"][subset].url.truetype = variableFont.files[style]
+                    });
+
+                })
+
 
                 // transfer the variable fonts
                 for (const style in variantsObject) {

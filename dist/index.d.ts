@@ -16,6 +16,7 @@ interface APIResponse {
 }
 interface APIVfResponse extends APIResponse {
     axes?: AxesResponseObject[];
+    files: Record<string, string>;
 }
 interface AxesResponseObject {
     tag: string;

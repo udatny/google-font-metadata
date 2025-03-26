@@ -218,11 +218,15 @@ const processQueue = async (font, variableFont, force) => {
             }
           }
         }
-        if (fontObject[id].family == "Overpass" || fontObject[id].family == "Aleo") {
-          console.log("Overpass=" + JSON.stringify(links));
-        }
-        const cssTuple = await fetchAllCSS(links, [apiv2.woff2, apiv2.woff, apiv2.ttf]);
+        const cssTuple = await fetchAllCSS(links, [apiv2.woff2, apiv2.woff]);
         const variantsObject = parseVariableCSS(cssTuple);
+        fontObject[fontId].styles.forEach((style) => {
+          Object.keys(
+            variantsObject[style]["variable"]
+          ).forEach((subset) => {
+            variantsObject[style]["variable"][subset].url.truetype = variableFont.files[style];
+          });
+        });
         for (const style in variantsObject) {
           const variants = variantsObject[style];
           for (const variant in variants) {
@@ -393,7 +397,7 @@ const fetchURL = async (url, withVfCapability = false) => {
     stringify(stripped)
   );
 };
-const baseurl = "https://www.googleapis.com/webfonts/v1/webfonts?fields=items(axes%2Ccategory%2Cfamily%2ClastModified%2Csubsets%2Cvariants%2Cversion)&key=";
+const baseurl = "https://www.googleapis.com/webfonts/v1/webfonts?fields=items(files%2Caxes%2Ccategory%2Cfamily%2ClastModified%2Csubsets%2Cvariants%2Cversion)&key=";
 const fetchAPIvf = async (key) => {
   if (key) {
     try {

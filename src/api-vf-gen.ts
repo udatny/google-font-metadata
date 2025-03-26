@@ -39,7 +39,7 @@ const fetchURL = async (url: string, withVfCapability: boolean = false): Promise
 };
 
 const baseurl =
-	'https://www.googleapis.com/webfonts/v1/webfonts?fields=items(axes%2Ccategory%2Cfamily%2ClastModified%2Csubsets%2Cvariants%2Cversion)&key=';
+	'https://www.googleapis.com/webfonts/v1/webfonts?fields=items(files%2Caxes%2Ccategory%2Cfamily%2ClastModified%2Csubsets%2Cvariants%2Cversion)&key=';
 
 /**
  * This fetches the Google Fonts Developer API for all the basic metadata available.
@@ -50,7 +50,6 @@ const baseurl =
 export const fetchAPIvf = async (key: string): Promise<void> => {
 	if (key) {
 		try {
-//			await fetchURL(baseurl + key);
 			await fetchURL(baseurl + key, true);
 			consola.success('Successful Google Font API fetch.');
 		} catch (error) {
