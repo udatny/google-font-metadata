@@ -245,7 +245,7 @@ const processQueue = async (font, variableFont, force) => {
           Object.keys(
             variantsObject[style]["variable"]
           ).forEach((subset) => {
-            variantsObject[style]["variable"][subset].url.truetype = variableFont.files[style];
+            variantsObject[style]["variable"][subset].url.truetype = variableFont.files[style == "normal" ? "regular" : style];
           });
         });
         for (const style in variantsObject) {
