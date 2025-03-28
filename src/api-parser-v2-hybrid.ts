@@ -88,7 +88,7 @@ export const fetchAllStaticFontCSS = async (
 // Convert CSS stylesheets to objects
 export const processStaticFontCSS = (
     css: [string, string, string],
-    font: APIVfResponse,
+    font: APIResponse,
 ) => {
     const id = getIdForFontFamilyName(font.family)
     const defSubset = font.subsets.includes('latin') ? 'latin' : font.subsets[0];
