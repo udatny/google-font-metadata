@@ -388,7 +388,7 @@ function convertAxesArrayToObject(axes) {
   );
 }
 const precisionToStep = (precision) => {
-  return (1 / Math.pow(10, precision)).toString();
+  return Math.pow(10, precision).toString();
 };
 const hasAnyVariantWithSubstring = (variants, substring) => {
   for (const variant of variants) {

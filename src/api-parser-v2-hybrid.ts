@@ -550,8 +550,8 @@ function convertAxesArrayToObject(
 }
 
 const precisionToStep = (precision: number): string => {
-    return (1 / Math.pow(10, precision)).toString();
-};
+    return Math.pow(10, precision).toString();
+}
 
 export const hasAnyVariantWithSubstring = (variants: string[], substring: string): boolean => {
     for (const variant of variants) {
