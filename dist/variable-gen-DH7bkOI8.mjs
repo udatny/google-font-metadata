@@ -151,6 +151,7 @@ const APIv2Hybrid = (() => {
       "../data/google-fonts-v2-hybrid.json"
     );
     const fileContents = fs$1.readFileSync(filePath, "utf8");
+    console.log("read and parsed google-fonts-v2-hybrid.json from file");
     return JSON.parse(fileContents);
   } catch (error) {
     if (error instanceof Error) {
