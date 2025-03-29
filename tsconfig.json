@@ -6,7 +6,8 @@
 		"scripts/**/*.ts",
 		"tests/**/*.ts",
 		"tests/**/*.json",
-		"vitest.config.mts"
+		"vitest.config.mts",
+		"data/*.json"
 	],
 	"compilerOptions": {
 		/* Projects */
@@ -35,7 +36,8 @@
 		"noFallthroughCasesInSwitch": true,
 
 		/* Completeness */
-		"skipLibCheck": true // Skip type checking all .d.ts files.
+		"skipLibCheck": true, // Skip type checking all .d.ts files.
+
 	},
 	"$schema": "https://json.schemastore.org/tsconfig"
 }
