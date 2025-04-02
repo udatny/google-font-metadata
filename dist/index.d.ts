@@ -97,6 +97,7 @@ interface APIIconResponse extends APIResponse {
 type FontObject = FontObjectV1 | FontObjectV2 | FontObjectVariable;
 interface AxesObject {
     name: string;
+    description: string;
     tag: string;
     min: number;
     max: number;

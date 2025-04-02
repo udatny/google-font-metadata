@@ -121,11 +121,11 @@ cli
 			if (
 				!options.v1 &&
 				!options.v2 &&
-				!options.v2hybrid &&
 				!options.variable &&
 				!options.icon &&
 				!options.license &&
-				!options.axisRegistry
+				!options.axisRegistry &&
+				!options.v2hybrid
 			) {
 				if (options.force) {
 					consola.info(

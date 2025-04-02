@@ -143,6 +143,7 @@ const isStandardAxesKey = (axesKey: string): axesKey is StandardAxes =>
 	STANDARD_AXES.includes(axesKey as StandardAxes);
 export interface AxesObject {
 	name: string;
+	description: string;
 	tag: string;
 	min: number;
 	max: number;

@@ -33,7 +33,7 @@ interface AxisObject {
 
 // Get the axis registry directory of textproto files
 const getDirectory = async (key?: string) => {
-	const octokit = new Octokit({ auth: key ?? process.env.GITHUB_TOKEN });
+	const octokit = new Octokit({ auth: process.env.GITHUB_TOKEN ?? key});
 	const { data } = await octokit.request(
 		'GET /repos/{owner}/{repo}/contents/{path}',
 		{

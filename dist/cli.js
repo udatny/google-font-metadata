@@ -3,7 +3,7 @@
 var cac = require('cac');
 var consola = require('consola');
 var colors = require('picocolors');
-var variableGen = require('./variable-gen-CZoAa2bC.js');
+var variableGen = require('./variable-gen-BK8Xf1mF.js');
 var fs = require('node:fs/promises');
 var node_url = require('node:url');
 var concurrency = require('@evan/concurrency');
@@ -510,7 +510,7 @@ cli.command("parse [key]", "Process metadata for v1 and v2 from gfm generate").o
       consola.consola.info("Parsing license metadata...");
       await variableGen.parseLicenses();
     }
-    if (!options.v1 && !options.v2 && !options.v2hybrid && !options.variable && !options.icon && !options.license && !options.axisRegistry) {
+    if (!options.v1 && !options.v2 && !options.variable && !options.icon && !options.license && !options.axisRegistry && !options.v2hybrid) {
       if (options.force) {
         consola.consola.info(
           `Parsing all metadata... ${colors.bold(colors.red("[FORCE]"))}`
